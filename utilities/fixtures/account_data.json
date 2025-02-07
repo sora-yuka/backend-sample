@@ -15,5 +15,22 @@
         "groups": [],
         "user_permissions": []
     }
+},
+{
+    "model": "account.user",
+    "pk": 2,
+    "fields": {
+        "last_login": null,
+        "is_superuser": false,
+        "first_name": "",
+        "last_name": "",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2025-03-06T17:22:33.698Z",
+        "email": "sample@mail.com",
+        "password": "pbkdf2_sha256$870000$7MIMvWYDvZB052tmJFXKYi$uhIU3SWQHCE5eNUrfwWrDIXPsp3wSkowO2TKlUsi/qw=",
+        "groups": [],
+        "user_permissions": []
+    }
 }
 ]

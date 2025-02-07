@@ -29,7 +29,7 @@ class RegisterUserAPIView(APIView):
                 "Status": status.HTTP_400_BAD_REQUEST,
             }, status=status.HTTP_400_BAD_REQUEST)
 
-        # send email could be here...
+        # 'send email' could be here...
         
         return Response(data={
             "Message": "User created successfully.",
