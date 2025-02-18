@@ -1,0 +1,5 @@
+volumes:
+    - data:/var/lib/postgresql/data  # do not use like: ./data:/var/lib/... it's definitely gonna throw an error
+
+# volumes:
+#   data: # define "data" in postgres volumes

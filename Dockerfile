@@ -8,8 +8,8 @@ WORKDIR /code
 COPY requirements.txt .
 
 RUN apt-get update \
-&& apt-get install -y build-essential make \
-&& pip install -r requirements.txt
+    && apt-get install -y build-essential make \
+    && pip install -r requirements.txt
 
 COPY . /code
 
