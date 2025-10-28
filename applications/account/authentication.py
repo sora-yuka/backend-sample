@@ -1,9 +1,11 @@
 from typing import Optional, Tuple
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from rest_framework.request import Request
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.tokens import Token
+
+User = get_user_model()
 
 
 class CookiesJWTAuthentication(JWTAuthentication):
