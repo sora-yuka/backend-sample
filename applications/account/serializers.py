@@ -11,8 +11,10 @@ User = get_user_model()
 
 class RegisterUserSerializer(serializers.ModelSerializer):
     password_confirm = serializers.CharField(
-        min_length=6, write_only=True, required=True
-        )
+        min_length=6, 
+        write_only=True, 
+        required=True,
+    )
     
     class Meta:
         model = User
@@ -28,7 +30,7 @@ class RegisterUserSerializer(serializers.ModelSerializer):
         password_confirm = attrs.pop("password_confirm")
         
         if password != password_confirm:
-            raise serializers.ValidationError({"password_confirm": ["Password do not match."]})
+            raise serializers.ValidationError({"password_confirm": ["Passwords do not match."]})
         return attrs
     
     def create(self, validated_data: Dict[str, str]) -> User:

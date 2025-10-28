@@ -56,6 +56,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -149,7 +150,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'applications.account.authentication.CookiesJWTAuthentication',
     ),
 }
 
@@ -158,14 +159,14 @@ REST_FRAMEWORK = {
 # https://django-rest-framework-simplejwt.readthedocs.io/en/latest/getting_started.html
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=100),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': False,
     'UPDATE_LAST_LOGIN': False,
 
     'ALGORITHM': 'HS256',
-    'SIGNING_KEY': SECRET_KEY,
+    'SIGNING_KEY': getenv("SECRET_KEY"),
     'VERIFYING_KEY': None,
     'AUDIENCE': None,
     'ISSUER': None,
@@ -193,12 +194,11 @@ SIMPLE_JWT = {
 # CORS headers
 # https://pypi.org/project/django-cors-headers/
 
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:8080',
-    'http://192.168.31.169:8080',
-    'http://localhost:3000',
-]
+CORS_ALLOWED_ORIGINS = getenv("CORS_ALLOWED_ORIGINS").split()
 
+CORS_ALLOW_CREDENTIALS = True
+
+COOKIE_SECURE = False
 
 # drf-yasg configuration
 # https://drf-yasg.readthedocs.io/en/stable/readme.html#usage
