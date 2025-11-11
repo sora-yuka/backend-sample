@@ -42,6 +42,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('swagger/', scheme_view.with_ui(renderer="swagger")),
     path('redoc/', scheme_view.with_ui(renderer="redoc")),
-    path('api/v1/account/', include('applications.account.urls')),
+    path('api/v1/account/', include('applications.accounts.urls')),
     path('api/v1/profile/', include('applications.userprofile.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

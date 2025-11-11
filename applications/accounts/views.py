@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.http import HttpResponse
 from django.contrib.auth import get_user_model
 from django.db.utils import IntegrityError
 from rest_framework.views import APIView
@@ -11,6 +12,7 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView as BaseTokenObtainPairView,
     TokenRefreshView as BaseTokenRefreshView
 )
+from typing import Dict, Any
 
 from .serializers import RegisterUserSerializer
 from applications.userprofile.models import Profile
@@ -25,8 +27,10 @@ class RegisterUserAPIView(APIView):
     def post(self, request: Request, format=None) -> Response:
         try:
             serializer = RegisterUserSerializer(data=request.data)
+            print('RegisterAPIView serializer: ', type(serializer))
             serializer.is_valid(raise_exception=True)
             user = serializer.save()
+            print('user = serializer.save(): ', type(user))
         except IntegrityError:
             return Response(data={
                 "Message": "Something went wrong while creating user.",
@@ -43,15 +47,12 @@ class RegisterUserAPIView(APIView):
 
 class TokenObtainPairView(BaseTokenObtainPairView):
     def post(self, request: Request, *args, **kwargs) -> Response:
-        """ 
-        Custom token obtain view that sets JWT tokens in HTTP-only cookies. 
-        """
         try:
-            token_response = super().post(request=request, *args, **kwargs)
-            token_data = token_response.data
+            token_response = super().post(request=request, *args, **kwargs) # rest_framework.response.Response
+            token_data: Dict[str, Any] = token_response.data
             
-            access_token = token_data.get("access")
-            refresh_token = token_data.get("refresh")
+            access_token: str | None = token_data.get("access")
+            refresh_token: str | None = token_data.get("refresh")
             
             if not access_token or not refresh_token:
                 raise InvalidToken("Token generation failed")
@@ -75,17 +76,17 @@ class TokenObtainPairView(BaseTokenObtainPairView):
                 max_age=settings.SIMPLE_JWT.get("REFRESH_TOKEN_LIFETIME").total_seconds()
             )
             return response
+        
         except TokenError as error:
             raise InvalidToken(detail=error.args[0])
         
-    def _set_token_cookie(self, response: Response, key: str, value: str, max_age: int) -> None:
-        """Helper method to set cookies"""
+    def _set_token_cookie(self, response: HttpResponse, key: str, value: str, max_age: int) -> None:
         response.set_cookie(
             key=key,
             value=value,
             max_age=int(max_age),
             path="/",
-            secure=getattr(settings, "COOKIE_SECURE", False),
+            secure=False,
             httponly=True,
             samesite="Lax"
         )

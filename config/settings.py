@@ -42,6 +42,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
+    # Allauth
+    'allauth',
+    'allauth.account',
+    
+    # Allauth providers
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    
     # External packages
     'rest_framework',
     'rest_framework_simplejwt',
@@ -49,7 +57,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     
     # Internal packages
-    'applications.account',
+    'applications.accounts',
     'applications.userprofile',
 ]
 
@@ -62,6 +70,12 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
+]
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -111,7 +125,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-AUTH_USER_MODEL = 'account.User'
+AUTH_USER_MODEL = 'accounts.User'
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
@@ -147,13 +161,18 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'applications.account.authentication.CookiesJWTAuthentication',
+        'applications.accounts.authentication.CookiesJWTAuthentication',
     ),
 }
 
+GOOGLE_OAUTH_CLIENT_ID = getenv('GOOGLE_OAUTH_CLIENT_ID')
+GOOGLE_OAUTH_CLIENT_SECRET = getenv('GOOGLE_OAUTH_CLIENT_SECRET')
+GOOGLE_OAUTH_REDIRECT_URI = getenv('GOOGLE_OAUTH_REDIRECT_URI')
+
+FRONTEND_URL = 'http://localhost:8080'
 
 # Simple JWT token settings
 # https://django-rest-framework-simplejwt.readthedocs.io/en/latest/getting_started.html
@@ -206,7 +225,7 @@ COOKIE_SECURE = False
 SWAGGER_SETTINGS = {
     'SECURITY_DEFINITIONS':{
         'api_key':{
-            'type':'apiKey',
+            'type':'API',
             'in':'header',
             'name': 'Authorization'
         }
